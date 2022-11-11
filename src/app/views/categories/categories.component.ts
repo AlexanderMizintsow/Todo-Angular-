@@ -15,7 +15,7 @@ export class CategoriesComponent implements OnInit {
   }
 
   ngOnInit()  {
-    this.categories = this.dataHandlerService.getCategories();
+    this.dataHandlerService.categotiesSubject.subscribe(categories => this.categories = categories)
   }
 
   showCategoty(categories: Category) {
