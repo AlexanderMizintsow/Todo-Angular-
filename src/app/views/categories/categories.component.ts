@@ -14,9 +14,11 @@ export class CategoriesComponent implements OnInit {
   constructor(private dataHandlerService: DataHandlerService) {
   }
 
-  ngOnInit(): void {
+  ngOnInit()  {
     this.categories = this.dataHandlerService.getCategories();
-    console.log(this.categories);
   }
 
+  showCategoty(categories: Category) {
+    this.dataHandlerService.getTodosByCategories(categories);
+  }
 }

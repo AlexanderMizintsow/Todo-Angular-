@@ -9,13 +9,12 @@ import {Task} from "../../model/Task";
 })
 export class TodosComponent implements OnInit {
 
-  tesks: Task[] | undefined;
+  tasks: Task[] | undefined;
 
   constructor(private dataHandlerService: DataHandlerService) { }
 
-  ngOnInit(): void {
-   this.tesks = this.dataHandlerService.getTodos();
-   console.log(this.tesks)
+  ngOnInit()  {
+   this.dataHandlerService.tasksSubject.subscribe(tasks => this.tasks = tasks)
   }
 
 }
