@@ -6,7 +6,11 @@
   </div>
   <div class="sidebar-wrapper">
     <ul class="nav">
-      <li class="nav-item active " *ngFor="let categories of categories" (click)="showCategoty(categories)">
+      <li class="nav-item active pointer "
+          *ngFor="let categories of categories"
+          (click)="showCategoty(categories)"
+          [class.active]="categories === selectedCategory"
+      >
         <a class="nav-link">
           <p>{{categories.title}}</p>
         </a>

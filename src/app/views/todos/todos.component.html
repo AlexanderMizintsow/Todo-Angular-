@@ -1,25 +1,126 @@
+<!--Версия таблицы с пагинацией-->
+
 <div class="card mt-5 pt-5">
-  <div class="card-header card-header-warning"><h4 class="card-title">
-    Список задач:</h4>
-    <p class="card-category">New employees on 15th September, 2016</p></div>
+  <div class="card-header card-header-warning"><h3 class="card-title">
+    Список задач:</h3></div>
   <div class="card-body table-responsive">
-    <table class="table table-hover">
-      <thead class="text-warning">
-      <th>ID</th>
-      <th>Название</th>
-      <th>Категория</th>
-      <th>Приоритет</th>
-      <th>Статус</th>
-      <th>Дата</th>
-      </thead>
-      <tbody>
-      <tr *ngFor="let task of tasks">
-        <td>{{task.id}}</td>
-        <td>{{task.title}}</td>
+    <div class="mat-elevation-z8">
+      <table class="table table-hover" mat-table [dataSource]="dataSource">
 
-      </tr>
+        <!--  цвет приоритета  -->
+        <ng-container matColumnDef="color">
+          <th *matHeaderCellDef mat-header-cell></th>
+          <td *matCellDef="let task" [style.background-color]="getPriorityColor(task)"
+              mat-cell></td>
+        </ng-container>
 
-      </tbody>
-    </table>
+        <!-- Порядковый номер -->
+        <ng-container matColumnDef="position">
+          <th class="text-warning" mat-header-cell *matHeaderCellDef> #</th>
+          <td [class.completed]="task.completed" mat-cell *matCellDef="let task; let i = index"> {{i + 1}} </td>
+        </ng-container>
+
+        <!-- Наименование задачи -->
+        <ng-container matColumnDef="title">
+          <th class="text-warning" mat-header-cell *matHeaderCellDef> Название</th>
+          <td [class.completed]="task.completed" mat-cell *matCellDef="let task"> {{task.title}} </td>
+        </ng-container>
+
+        <!-- Категория -->
+        <ng-container matColumnDef="categories">
+          <th class="text-warning" mat-header-cell *matHeaderCellDef> Категория</th>
+          <td [class.completed]="task.completed" mat-cell *matCellDef="let task">
+            {{task.category ? task.category.title : '-' }} <!--Методом тыка и ошибок, но так и не понял;-->
+          </td>
+        </ng-container>
+
+
+        <!-- Приоритет -->
+        <ng-container matColumnDef="priority">
+          <th class="text-warning" mat-header-cell *matHeaderCellDef> Приоритет</th>
+          <td [class.completed]="task.completed" mat-cell *matCellDef="let task">
+            {{task.priority ? task.priority.title : '-' }} <!--Методом тыка и ошибок, но так и не понял;-->
+          </td>
+        </ng-container>
+
+        <!-- Дата -->
+        <ng-container matColumnDef="date">
+          <th class="text-warning" mat-header-cell *matHeaderCellDef> Дата</th>
+          <td [class.completed]="task.completed" mat-cell *matCellDef="let task">
+            {{task.date ? (task.date | date:'medium') : '-'}}
+          </td>
+        </ng-container>
+
+        <!-- Статус -->
+        <ng-container matColumnDef="status">
+          <th class="text-warning" mat-header-cell *matHeaderCellDef> Статус</th>
+          <td [class.completed]="task.completed" mat-cell *matCellDef="let task" [class.notcompleted]="!task.completed">
+
+            <div class="form-check">
+              <label class="form-check-label">
+                <input [checked]="task.completed"
+                       (click)="toggleTaskCompleted(task)"
+                       class="form-check-input"
+                       type="checkbox"
+                       value="">
+                <span class="form-check-sign"><span class="check"></span></span>
+              </label>
+            </div>
+
+            {{task.completed ? 'Выполнено' : 'Не выполнено'}}
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 3, 10, 20]"
+                     showFirstLastButtons
+                     aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </div>
+
   </div>
 </div>
+
+<!--Старая версия таблицы без пагинации-->
+
+<!--<table  class="table table-hover mat-table"> &lt;!&ndash;[dataSource]="dataSource"&ndash;&gt;-->
+<!--<thead class="text-warning">-->
+<!--<th>#</th>-->
+<!--<th>Название</th>-->
+<!--<th>Категория</th>-->
+<!--<th>Приоритет</th>-->
+<!--<th>Дата</th>-->
+<!--<th>Статус</th>-->
+<!--</thead>-->
+<!--<tbody>-->
+<!--&lt;!&ndash;*ngFor="let task of tasks; let i = index" - перебор массива&ndash;&gt;-->
+<!--<tr *ngFor="let task of tasks; let i = index"-->
+<!--    [class.completed]="task.completed">&lt;!&ndash;Класс применяется в случае true&ndash;&gt;-->
+<!--  <td>{{i + 1}}</td>-->
+<!--  <td>{{task.title}}</td>-->
+<!--  <td>{{task.category ? task.category.title : '-' }} </td> &lt;!&ndash;В случае пустых даных возможна ошибка&ndash;&gt;-->
+<!--  <td>{{task.priority ? task.priority.title : '-' }}</td>-->
+<!--  <td>{{task.date ? (task.date | date:'medium') : '-'}}</td>-->
+<!--  <td [class.notcompleted]="!task.completed">{{task.completed ? 'Выполнено' : 'Не выполнено'}}</td>-->
+<!--  <div class="form-check">-->
+<!--    <label class="form-check-label">-->
+<!--      &lt;!&ndash;Для [checked] применяется значение true либо false из "task.completed";-->
+<!--      Квадратные скобки дают возможность передать исчесляемок значение в выражении&ndash;&gt;-->
+<!--      &lt;!&ndash; (click)="toggleTaskCompleted(task) =>-->
+<!--      Элементарно меняем в функции с false на true и наоборот&ndash;&gt;-->
+<!--      <input [checked]="task.completed"-->
+<!--             (click)="toggleTaskCompleted(task)"-->
+<!--             class="form-check-input"-->
+<!--             type="checkbox"-->
+<!--             value="" >-->
+<!--      <span class="form-check-sign"><span class="check"></span></span>-->
+<!--    </label>-->
+<!--  </div>-->
+<!--</tr>-->
+
+<!--</tbody>-->
+<!--</table>-->

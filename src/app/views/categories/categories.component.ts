@@ -8,17 +8,18 @@ import {Category} from "../../model/Category";
   styleUrls: ['./categories.component.scss']
 })
 export class CategoriesComponent implements OnInit {
-
+  selectedCategory: Category | undefined;
   categories: Category[] | undefined;
 
   constructor(private dataHandlerService: DataHandlerService) {
   }
 
-  ngOnInit()  {
+  ngOnInit() {
     this.dataHandlerService.categotiesSubject.subscribe(categories => this.categories = categories)
   }
 
   showCategoty(categories: Category) {
+      this.selectedCategory = categories;
     this.dataHandlerService.getTodosByCategories(categories);
   }
 }
